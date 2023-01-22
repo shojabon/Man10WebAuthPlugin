@@ -77,17 +77,16 @@ public class Man10WebAuthAPI {
         p.sendMessage(Man10WebAuth.prefix + "§a§l" + message);
     }
 
-    public static JSONObject registerAccount(Player p, String username, String password){
+    public static JSONObject registerAccount(Player p, String password){
         JSONObject payload = new JSONObject();
-        payload.put("minecraftUUID", p.getUniqueId().toString());
-        payload.put("minecraftUsername", username);
+        payload.put("minecraftUsername", p.getName());
         payload.put("password", password);
         return httpRequest(Man10WebAuth.config.getString("api.endpoint") + "/register", "POST", payload);
     }
 
     public static JSONObject updatePassword(Player p, String password){
         JSONObject payload = new JSONObject();
-        payload.put("minecraftUUID", p.getUniqueId().toString());
+        payload.put("minecraftUsername", p.getName());
 
         JSONObject data = new JSONObject();
         data.put("password", password);
@@ -99,7 +98,7 @@ public class Man10WebAuthAPI {
 
     public static JSONObject updateUsername(Player p, String username){
         JSONObject payload = new JSONObject();
-        payload.put("minecraftUUID", p.getUniqueId().toString());
+        payload.put("minecraftUsername", p.getName());
 
         JSONObject data = new JSONObject();
         data.put("username", username);

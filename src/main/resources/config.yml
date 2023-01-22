@@ -1,4 +1,4 @@
 api:
-  endpoint: "http://localhost:1234"
+  endpoint: "http://localhost:1234/auth/private"
   key: "testa"
 prefix: "§c§l[Man10WebAuth]"

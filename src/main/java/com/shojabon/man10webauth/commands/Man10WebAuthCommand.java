@@ -1,9 +1,6 @@
 package com.shojabon.man10webauth.commands;
 import com.shojabon.man10webauth.Man10WebAuth;
-import com.shojabon.man10webauth.commands.subCommands.ChangePasswordCommand;
-import com.shojabon.man10webauth.commands.subCommands.ChangeUsernameCommand;
-import com.shojabon.man10webauth.commands.subCommands.RegisterAccountCommand;
-import com.shojabon.man10webauth.commands.subCommands.TestCommand;
+import com.shojabon.man10webauth.commands.subCommands.*;
 import com.shojabon.mcutils.Utils.SCommandRouter.SCommandArgument;
 import com.shojabon.mcutils.Utils.SCommandRouter.SCommandArgumentType;
 import com.shojabon.mcutils.Utils.SCommandRouter.SCommandObject;
@@ -38,7 +35,6 @@ public class Man10WebAuthCommand extends SCommandRouter {
         addCommand(
                 new SCommandObject()
                         .addArgument(new SCommandArgument().addAllowedString("register"))
-                        .addArgument(new SCommandArgument().addAlias("ユーザー名"))
                         .addArgument(new SCommandArgument().addAlias("パスワード"))
 
                         .addRequiredPermission("man10webauth.register").addExplanation("アカウント登録").
@@ -61,6 +57,17 @@ public class Man10WebAuthCommand extends SCommandRouter {
 
                         .addRequiredPermission("man10webauth.set.username").addExplanation("アカウントのユーザー名を変更").
                         setExecutor(new ChangeUsernameCommand(plugin))
+        );
+        addCommand(
+                new SCommandObject()
+                        .addArgument(new SCommandArgument().addAllowedString("reload")).
+
+                        addRequiredPermission("man10webauth.reload")
+                        .addExplanation("プラグインをリロードする")
+                        .addExplanation("")
+                        .addExplanation("設定を変更したときに使用する")
+                        .addExplanation("コマンドを使用するとサーバー起動時状態に戻る")
+                        .setExecutor(new ReloadConfigCommand(plugin))
         );
     }
 

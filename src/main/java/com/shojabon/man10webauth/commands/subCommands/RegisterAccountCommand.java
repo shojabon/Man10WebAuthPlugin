@@ -20,7 +20,7 @@ public class RegisterAccountCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         new Thread(() -> {
-            JSONObject request = Man10WebAuthAPI.registerAccount(player, args[1], args[2]);
+            JSONObject request = Man10WebAuthAPI.registerAccount(player, args[1]);
             String status = request.getString("status");
             if(status.equals("success")){
                 Man10WebAuthAPI.successMessage(player, "アカウントを作成しました");
