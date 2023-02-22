@@ -1,6 +1,6 @@
 name: Man10WebAuth
 version: '${project.version}'
 main: com.shojabon.man10webauth.Man10WebAuth
-api-version: 1.17
+api-version: 1.19
 commands:
   mwa:

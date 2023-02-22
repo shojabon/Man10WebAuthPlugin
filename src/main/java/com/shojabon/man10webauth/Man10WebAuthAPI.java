@@ -6,12 +6,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +26,25 @@ public class Man10WebAuthAPI {
 
     public Man10WebAuthAPI(Man10WebAuth plugin){
         this.plugin = plugin;
+
+        // Install a custom TrustManager to ignore certificate validation
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }
+        };
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, sslSession) -> true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // global methods
@@ -32,8 +56,7 @@ public class Man10WebAuthAPI {
             // optional default is GET
             con.setRequestMethod(method);
             con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            con.setRequestProperty("Accept", "application/json; charset=UTF-8");
-            con.setRequestProperty("x-api-key", Man10WebAuth.config.getString("api.key"));
+            con.setRequestProperty("Authenticate", Man10WebAuth.config.getString("api.key"));
             con.setDoOutput(true);
 
             try(OutputStream os = con.getOutputStream()) {
@@ -58,8 +81,16 @@ public class Man10WebAuthAPI {
             }
             in.close();
 
+            System.out.println(response.toString());
             //print result
-            return new JSONObject(response.toString());
+            JSONObject responseObject = new JSONObject();
+            if(responseCode == 200){
+                responseObject.put("status", "success");
+                responseObject.put("message", "成功しました");
+            }else{
+                throw new Exception("failed");
+            }
+            return responseObject;
         } catch (Exception e) {
             e.printStackTrace();
             JSONObject failResponse = new JSONObject();
@@ -79,33 +110,11 @@ public class Man10WebAuthAPI {
 
     public static JSONObject registerAccount(Player p, String password){
         JSONObject payload = new JSONObject();
-        payload.put("minecraftUsername", p.getName());
+        payload.put("username", p.getName());
+        payload.put("userId", p.getUniqueId().toString());
         payload.put("password", password);
+        payload.put("metadata", JSONObject.NULL);
         return httpRequest(Man10WebAuth.config.getString("api.endpoint") + "/register", "POST", payload);
-    }
-
-    public static JSONObject updatePassword(Player p, String password){
-        JSONObject payload = new JSONObject();
-        payload.put("minecraftUsername", p.getName());
-
-        JSONObject data = new JSONObject();
-        data.put("password", password);
-
-        payload.put("data", data);
-
-        return httpRequest(Man10WebAuth.config.getString("api.endpoint") + "/update", "POST", payload);
-    }
-
-    public static JSONObject updateUsername(Player p, String username){
-        JSONObject payload = new JSONObject();
-        payload.put("minecraftUsername", p.getName());
-
-        JSONObject data = new JSONObject();
-        data.put("username", username);
-
-        payload.put("data", data);
-
-        return httpRequest(Man10WebAuth.config.getString("api.endpoint") + "/update", "POST", payload);
     }
 
 }

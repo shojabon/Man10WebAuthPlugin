@@ -24,13 +24,6 @@ public class Man10WebAuthCommand extends SCommandRouter {
 
     public void registerCommands(){
         //shops command
-        addCommand(
-                new SCommandObject()
-                        .addArgument(new SCommandArgument().addAllowedString("test")).
-
-                        addRequiredPermission("man10shopv3.test").addExplanation("テスト").
-                        setExecutor(new TestCommand(plugin))
-        );
 
         addCommand(
                 new SCommandObject()
@@ -41,23 +34,6 @@ public class Man10WebAuthCommand extends SCommandRouter {
                         setExecutor(new RegisterAccountCommand(plugin))
         );
 
-        addCommand(
-                new SCommandObject()
-                        .addArgument(new SCommandArgument().addAllowedString("set-password"))
-                        .addArgument(new SCommandArgument().addAlias("パスワード"))
-
-                        .addRequiredPermission("man10webauth.set.password").addExplanation("アカウントのパスワードを変更").
-                        setExecutor(new ChangePasswordCommand(plugin))
-        );
-
-        addCommand(
-                new SCommandObject()
-                        .addArgument(new SCommandArgument().addAllowedString("set-username"))
-                        .addArgument(new SCommandArgument().addAlias("パスワード"))
-
-                        .addRequiredPermission("man10webauth.set.username").addExplanation("アカウントのユーザー名を変更").
-                        setExecutor(new ChangeUsernameCommand(plugin))
-        );
         addCommand(
                 new SCommandObject()
                         .addArgument(new SCommandArgument().addAllowedString("reload")).
