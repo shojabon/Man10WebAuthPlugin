@@ -1,7 +1,6 @@
 package com.shojabon.man10webauth.commands.subCommands;
 
 import com.shojabon.man10webauth.Man10WebAuth;
-import com.shojabon.mcutils.Utils.SInventory.SInventory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

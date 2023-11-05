@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -56,7 +57,7 @@ public class Man10WebAuthAPI {
             // optional default is GET
             con.setRequestMethod(method);
             con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            con.setRequestProperty("Authenticate", Man10WebAuth.config.getString("api.key"));
+            con.setRequestProperty("Authorization", Man10WebAuth.config.getString("api.key"));
             con.setDoOutput(true);
 
             try(OutputStream os = con.getOutputStream()) {
@@ -81,16 +82,15 @@ public class Man10WebAuthAPI {
             }
             in.close();
 
-            System.out.println(response.toString());
+            System.out.println(response);
             //print result
-            JSONObject responseObject = new JSONObject();
-            if(responseCode == 200){
-                responseObject.put("status", "success");
-                responseObject.put("message", "成功しました");
-            }else{
-                throw new Exception("failed");
-            }
-            return responseObject;
+            //if(responseCode == 200){
+//                responseObject.put("status", "success");
+//                responseObject.put("message", "成功しました");
+//            }else{
+//                throw new Exception("failed");
+//            }
+            return new JSONObject(response.toString());
         } catch (Exception e) {
             e.printStackTrace();
             JSONObject failResponse = new JSONObject();
@@ -98,6 +98,13 @@ public class Man10WebAuthAPI {
             failResponse.put("message", "エンドポイントに接続することがで来ませんでした");
             return failResponse;
         }
+    }
+
+    public static JSONObject authenticateAccount(Player p, String password){
+        JSONObject payload = new JSONObject();
+        payload.put("username", p.getName());
+        payload.put("password", password);
+        return httpRequest(Man10WebAuth.config.getString("api.endpoint") + "/authenticate", "POST", payload);
     }
 
     public static void warnMessage(Player p, String message){

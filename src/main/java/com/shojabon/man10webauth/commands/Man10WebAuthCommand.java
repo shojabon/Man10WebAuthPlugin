@@ -1,10 +1,8 @@
 package com.shojabon.man10webauth.commands;
 import com.shojabon.man10webauth.Man10WebAuth;
 import com.shojabon.man10webauth.commands.subCommands.*;
-import com.shojabon.mcutils.Utils.SCommandRouter.SCommandArgument;
-import com.shojabon.mcutils.Utils.SCommandRouter.SCommandArgumentType;
-import com.shojabon.mcutils.Utils.SCommandRouter.SCommandObject;
-import com.shojabon.mcutils.Utils.SCommandRouter.SCommandRouter;
+import com.shojabon.scommandrouter.SCommandRouter.SCommandObject;
+import com.shojabon.scommandrouter.SCommandRouter.SCommandRouter;
 
 
 public class Man10WebAuthCommand extends SCommandRouter {
@@ -12,6 +10,7 @@ public class Man10WebAuthCommand extends SCommandRouter {
     Man10WebAuth plugin;
 
     public Man10WebAuthCommand(Man10WebAuth plugin){
+        super(plugin, "mwa");
         this.plugin = plugin;
         registerCommands();
         registerEvents();
@@ -23,28 +22,38 @@ public class Man10WebAuthCommand extends SCommandRouter {
     }
 
     public void registerCommands(){
-        //shops command
-
         addCommand(
                 new SCommandObject()
-                        .addArgument(new SCommandArgument().addAllowedString("register"))
-                        .addArgument(new SCommandArgument().addAlias("パスワード"))
-
-                        .addRequiredPermission("man10webauth.register").addExplanation("アカウント登録").
-                        setExecutor(new RegisterAccountCommand(plugin))
+                        .prefix("register")
+//                        .argument("パスワード")
+                        .permission("man10webauth.register")
+                        .explanation("アカウント登録")
+                        .executor(new RegisterAccountCommand(plugin))
         );
 
         addCommand(
                 new SCommandObject()
-                        .addArgument(new SCommandArgument().addAllowedString("reload")).
-
-                        addRequiredPermission("man10webauth.reload")
-                        .addExplanation("プラグインをリロードする")
-                        .addExplanation("")
-                        .addExplanation("設定を変更したときに使用する")
-                        .addExplanation("コマンドを使用するとサーバー起動時状態に戻る")
-                        .setExecutor(new ReloadConfigCommand(plugin))
+                        .prefix("reload")
+                        .permission("man10webauth.reload")
+                        .explanation(
+                                "プラグインをリロードする",
+                                "",
+                                "設定を変更したときに使用する",
+                                "コマンドを使用するとサーバー起動時状態に戻る"
+                        )
+                        .executor(new ReloadConfigCommand(plugin))
         );
+
+        addCommand(
+                new SCommandObject()
+                        .prefix("api")
+                        .permission("man10webauth.api")
+                        .explanation(
+                                "APIキーを発行する"
+                        )
+                        .executor(new APIKeyCommand(plugin))
+        );
+
     }
 
 }
