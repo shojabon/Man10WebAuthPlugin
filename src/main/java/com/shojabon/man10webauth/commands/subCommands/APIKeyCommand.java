@@ -2,6 +2,9 @@ package com.shojabon.man10webauth.commands.subCommands;
 
 import com.shojabon.man10webauth.Man10WebAuth;
 import com.shojabon.man10webauth.Man10WebAuthAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +26,11 @@ public class APIKeyCommand implements CommandExecutor {
             JSONObject request = Man10WebAuthAPI.authenticateAccount(player, plugin.getConfig().getString("BETAKEY"));
             String status = request.getString("status");
             if(status.equals("success")){
-                Man10WebAuthAPI.successMessage(player, "APIキー: " + request.getString("data"));
+                String apiKey = request.getString("data");
+                player.sendMessage(Component.text(Man10WebAuth.prefix + "§a§lAPIキー: " + apiKey)
+                        .clickEvent(ClickEvent.copyToClipboard(apiKey))
+                        .hoverEvent(HoverEvent.showText(Component.text("クリックでコピー"))));
+
                 return;
             }
 
